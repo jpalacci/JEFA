@@ -27,11 +27,12 @@ static Node * root;
 
     %token<i> INT
 
-
 %token<s> ID STRING
 
-%type<node> file statement expression
+%type<node> file statement expression definition primary type assignment
 
+
+%left EQCOMP EQASS NE
 	    
 %start file
     
@@ -46,40 +47,135 @@ file : statement
      ;
 
 statement : statement statement {
+		$$ = new_tree();
+		add_node($$, $1);
+		add_node($$, $2);
 
 	}
 	| WHILE LPAREN expression RPAREN LCURLY statement RCURLY {
 		$$ = new_tree();
 
-		add_terminal_node($$, "while");
-		add_terminal_node($$, "(");
+		add_terminal_node($$, while_);
+		add_terminal_node($$, lparen_);
 		add_node($$, $3);
-		add_terminal_node($$, ")");
-		add_terminal_node($$, "{");
+		add_terminal_node($$, rparen_);
+		add_terminal_node($$, lcurly_);
 		add_node($$, $6);
-		add_terminal_node($$, "}");
+		add_terminal_node($$, rcurly_);
 
 
 	}
 	| SEMICOL {
 		$$ = new_tree();
-		add_terminal_node($$, ";");
+		add_terminal_node($$, semicol_);
 
 	}
-	| INT statement {
+	| IF LPAREN expression RPAREN LCURLY statement RCURLY {
 
-	}
+		$$ = new_tree();
+
+		add_terminal_node($$, if_);
+		add_terminal_node($$, lparen_);
+		add_node($$, $3);
+		add_terminal_node($$, rparen_);
+		add_terminal_node($$, lcurly_);
+		add_node($$, $6);
+		add_terminal_node($$, rcurly_);
+
+	} | definition SEMICOL 
+		{
+			$$ = new_tree();
+			add_node($$, $1);
+			add_terminal_node($$, semicol_);
+
+		} | assignment SEMICOL
+		{
+			$$ = new_tree();
+			add_node($$, $1);
+			add_terminal_node($$, semicol_);
+		}
 	;
 
-expression : INT {
+definition : type ID
+	{
+			$$ = new_tree();
+			add_node($$, $1);
+			add_terminal_node_with_value($$, id_, $2);
+	} | type assignment 
+	{
+			$$ = new_tree();
+			add_node($$, $1);
+			add_node($$, $2);
+	} 
+
+	;
+
+type : INT_T
+{
+	$$ = new_tree();
+	add_terminal_node($$, int_t_);
+}
+
+
+expression : expression EQCOMP expression {
+	$$ = new_tree();
+	add_node($$, $1);
+	add_terminal_node($$, eqcomp_);
+	add_node($$, $3);
+	add_terminal_node($$, rparen_);
+
+} | expression NE expression 
+	{
+		$$ = new_tree();
+		add_terminal_node($$, ne_);
+		add_node($$, $1);
+		add_terminal_node($$, eqcomp_);
+		add_node($$, $3);
+		add_terminal_node($$, rparen_);
+	}
+	| primary
+	{
+		$$ = new_tree();
+		add_node($$, $1);
+	}
+
+;
+
+primary : ID
+{
+	$$ = new_tree();
+	add_terminal_node_with_value($$, id_, $1);
+
+	
+} | INT {
+	
 	$$ = new_tree();
 	char * buffer = malloc(33);
 	sprintf(buffer, "%d", $1);
-	add_terminal_node($$, buffer);
+	add_terminal_node_with_value($$, int_, buffer);
+} | LPAREN expression RPAREN 
+	{
 
+		$$ = new_tree();
+
+		add_terminal_node($$, lparen_);
+		add_node($$, $2);
+		add_terminal_node($$, rparen_);
+	}
+
+;
+
+assignment : ID EQASS expression
+{
+	$$ = new_tree();
+	add_terminal_node_with_value($$, id_, $1);
+	add_terminal_node($$, eqass_);
+	add_node($$, $3);
 }
 
 ;
+
+
 
 
 %%

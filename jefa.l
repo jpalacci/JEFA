@@ -28,8 +28,8 @@ number	[-+]?{digit}+
 =	{return EQASS;}
 "or"	{return OR;}
 "and"	{return AND;}
-"=="	{return EQCOMP;}
-"!="	{return NE;}
+"equals"	{return EQCOMP;}
+"not equals"	{return NE;}
 "<"	{return LT;}
 "<="	{return LE;}
 ">"	{return GT;}
@@ -43,11 +43,19 @@ number	[-+]?{digit}+
 "string"	{return STRING_T;}
 "int"	{return INT_T;}
 
-\".*\"	{return STRING;}
+\".*\"	{char * text = malloc(strlen(yytext)+1);
+			strcpy(text, yytext);
+			yylval.s = text;
+			return STRING;}
+
 {number}	{yylval.i = strtol(yytext, NULL, 10); return INT;}
 
-{word}	{return ID;}
+{word}	{ 	char * text = malloc(strlen(yytext)+1);
+			strcpy(text, yytext);
+			yylval.s = text; return ID;
+		}
 
+}
 	
 %%
 

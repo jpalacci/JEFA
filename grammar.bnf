@@ -1,0 +1,56 @@
+<file> ::= <statement> 
+ 
+<statement> ::= <statement> <statement>
+	  | "while" "(" <expression> ")" "{" <statement> "}"
+	  | "if" "(" <expression> ")" "{" <statement> "}"
+	  | <definition> ";"
+	  | <expression> ";"
+	  | <assignment> ";"
+	  | ";"
+	  |	<function> ";"
+
+<definition> ::= <type> "id"
+	  | <type> <assignment>
+
+
+<type> ::= "int_t"
+		| "auto_t"
+		| "regexp_t"
+		| "string_t"
+
+<expression> ::= <operand> "equals" <operand>
+		| <operand> "not equals" <operand>
+		| <operand> "<" <operand>
+		| <operand> ">" <operand>
+		| <operand> "<=" <operand>
+		| <operand> ">=" <operand>
+		| "(" <expression> ")" "and" "(" <expression> ")"
+		| "(" <expression> ")" "or" "(" <expression> ")"
+
+<operand> ::= <primary> <operator> <operand>
+		| <primary>
+
+
+<primary> ::= "id"
+		| <built_in>
+		| '(' <operand> ')'
+
+<built_in> ::= "auto"
+		| "string"
+		| "int"
+
+<operator> ::= "+"
+		| "-"
+		| "and"
+		| "or"
+		| "*"
+		| "/"
+
+<assignment> ::= "id" "=" <expression>
+
+<function> ::= "print" <fargs>
+
+<fargs> ::= "id"
+		| <expression>
+		| <primary>
+
