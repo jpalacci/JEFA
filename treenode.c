@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "treenode.h"
+#include <string.h>
 
 static Node *
 new_node(token token, char * value){
@@ -43,7 +44,6 @@ get_value(Node * n){
 void
 print_tree(Node * t){
 	if(t->index == 0){
-		
 		set_info(t);
 
 		if(t->value == NULL){
@@ -52,16 +52,70 @@ print_tree(Node * t){
 			printf("%s",t->value );
 		}
 
+		return;
+
 	}
-	for(int i = 0; i < t->index; i++){
-		print_tree(t->children[i]);
+	switch(t->token){
+
+		case and_:
+
+			printf("%s", "BasicOperations.intersection(");
+			print_tree(t->children[0]);
+			putchar(',');
+			print_tree(t->children[2]);
+			printf("%s", ")");
+
+		break;
+
+		case or_:
+
+			printf("%s", "BasicOperations.union(");
+			print_tree(t->children[0]);
+			putchar(',');
+			print_tree(t->children[2]);
+			printf("%s", ")");
+
+		break;
+
+		case ne_:
+			putchar('!');
+
+			//no pongo break !!
+
+		case eqcomp_:
+			print_tree(t->children[0]);
+			printf("%s",".equals(");
+			print_tree(t->children[2]);
+			printf("%s", ")");
+
+		break;
+
+		default: 
+		{
+			for(int i = 0; i < t->index; i++){
+				print_tree(t->children[i]);
+			}
+		};
 	}
+	
+}
+void
+print_headers(){
+
+}
+
+void
+print_program(Node * t){
+	//print_headers();
+	print_tree(t);
+	//print_end();
 }
 
 void
 set_info(Node * t) {
 
 	if(t->token == int_) {
+
 		char * text = "new Integer(";
 		char * aux = t->value;
 		t->value = malloc(strlen(text) + strlen(t->value) + 3);
@@ -70,6 +124,7 @@ set_info(Node * t) {
 	if(t->token == int_ || t->token == string_ || t->token == id_) {
 		return;
 	}
+
 
 	t->value = tokens[t->token];
 }

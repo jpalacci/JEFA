@@ -13,8 +13,8 @@ word	{letter}({letter}|{digit})*
 number	[-+]?{digit}+
 
 %%
-"auto" {return AUTO;}
-"regexp" {return REGEXP;}
+"auto" {return AUTO_T;}
+"regexp" {return REGEXP_T;}
 {ws}	{/* no action and no return */}
 #.*	{/* comments, no action and no return */}
 "if"	{return IF;}
@@ -55,7 +55,6 @@ number	[-+]?{digit}+
 			yylval.s = text; return ID;
 		}
 
-}
 	
 %%
 

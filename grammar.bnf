@@ -7,6 +7,7 @@
 	  | <expression> ";"
 	  | <assignment> ";"
 	  | ";"
+	  | <operand> ";"
 	  |	<function> ";"
 
 <definition> ::= <type> "id"
