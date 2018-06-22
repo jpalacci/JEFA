@@ -42,6 +42,7 @@ number	[-+]?{digit}+
 "!"	{return OPP;}
 "string"	{return STRING_T;}
 "int"	{return INT_T;}
+"print " {return PRINT;}
 
 \".*\"	{char * text = malloc(strlen(yytext)+1);
 			strcpy(text, yytext);

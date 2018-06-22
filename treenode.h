@@ -42,3 +42,12 @@ print_tree(Node * t);
 void
 add_terminal_node_with_value(Node * p, token token, char * value);
 
+void 
+print_headers();
+
+void
+print_program();
+
+void
+print_end();
+

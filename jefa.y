@@ -42,7 +42,7 @@ static Node * root;
 file : statement
 	{
 		root = $1;
-		print_tree(root);	
+		print_program(root);	
 	}
      ;
 
@@ -112,16 +112,18 @@ statement : statement statement {
 		}
 	;
 
-definition : type ID
-	{
-			$$ = new_tree();
-			add_node($$, $1);
-			add_terminal_node_with_value($$, id_, $2);
-	} | type assignment 
+definition : 
+	type assignment 
 	{
 			$$ = new_tree();
 			add_node($$, $1);
 			add_node($$, $2);
+	} 
+	| type ID
+	{
+			$$ = new_tree();
+			add_node($$, $1);
+			add_terminal_node_with_value($$, id_, $2);
 	} 
 
 	;
@@ -282,14 +284,20 @@ assignment : ID EQASS expression
 	add_terminal_node_with_value($$, id_, $1);
 	add_terminal_node($$, eqass_);
 	add_node($$, $3);
-}
+} | ID EQASS operand {
+	$$ = new_tree();
+	add_terminal_node_with_value($$, id_, $1);
+	add_terminal_node($$, eqass_);
+	add_node($$, $3);
 
+}
 ;
 
 function : PRINT fargs {
 	$$ = new_tree();
 	add_terminal_node($$, print_);
 	add_node($$, $2);
+	$$->token = print_;
 }
 
 ;
@@ -297,7 +305,7 @@ function : PRINT fargs {
 fargs : expression {
 	$$ = new_tree();
 	add_node($$, $1);
-} | primary {
+} | operand {
 	$$ = new_tree();
 	add_node($$, $1);
 }

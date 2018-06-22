@@ -1,3 +1,8 @@
+#!/bin/bash
+
 yacc -dtv jefa.y
 flex jefa.l
 gcc -o salida lex.yy.c y.tab.c treenode.c
+cat $1 | ./salida > Main.java  
+javac -cp ".:./automaton.jar" Main.java
+java -cp ".:./automaton.jar" Main

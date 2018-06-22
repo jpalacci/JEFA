@@ -90,6 +90,12 @@ print_tree(Node * t){
 
 		break;
 
+		case print_:
+			printf("%s\n","System.out.println(" );
+			print_tree(t->children[1]);
+			printf("%s\n", ")");
+			break;
+
 		default: 
 		{
 			for(int i = 0; i < t->index; i++){
@@ -99,16 +105,23 @@ print_tree(Node * t){
 	}
 	
 }
-void
-print_headers(){
-
-}
 
 void
 print_program(Node * t){
-	//print_headers();
+	print_headers();
 	print_tree(t);
-	//print_end();
+	print_end();
+}
+
+void 
+print_headers() {
+	char * headers = "import dk.brics.automaton.*; public class Main { public static void main(String[] args) {";
+	printf("%s",headers);
+}
+
+void
+print_end() {
+	printf("%s\n", "}}");
 }
 
 void
