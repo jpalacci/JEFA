@@ -10,12 +10,12 @@ ws		{delim}+
 letter	[a-zA-Z]
 digit	[0-9]
 word	{letter}({letter}|{digit})*
-number	[-+]?{digit}+
+number	{digit}+
 
 %%
+{ws}	{/* no action and no return */}
 "auto" {return AUTO_T;}
 "regexp" {return REGEXP_T;}
-{ws}	{/* no action and no return */}
 #.*	{/* comments, no action and no return */}
 "if"	{return IF;}
 "else"	{return ELSE;}
@@ -31,6 +31,8 @@ number	[-+]?{digit}+
 "equals"	{return EQCOMP;}
 "not equals"	{return NE;}
 "<"	{return LT;}
+"true"	{return TRUE;}
+"false"	{return FALSE;}
 "<="	{return LE;}
 ">"	{return GT;}
 ">="	{return GE;}
@@ -40,9 +42,17 @@ number	[-+]?{digit}+
 "/"	{return DIV;}
 "%"	{return MOD;}
 "!"	{return OPP;}
+"scan"	{return SCAN;}
+"graph" {return GRAPH;}
+"accepts"	{return ACC;}
+"_" {return TOREGEXP;}
 "string"	{return STRING_T;}
 "int"	{return INT_T;}
 "print " {return PRINT;}
+"det" {return DET;}
+"min" {return MIN;}
+"concat" {return CONCAT;}
+"~" {return COMP;}
 
 \".*\"	{char * text = malloc(strlen(yytext)+1);
 			strcpy(text, yytext);

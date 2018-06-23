@@ -1,0 +1,8 @@
+int m = 8;
+auto a = _"1+45";
+auto b = a;
+
+while(!(m >= 30)){
+m = m+1;
+print m;
+}

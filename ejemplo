@@ -1,9 +1,0 @@
-int m = 8;
-while(m not equals 3) {
-	int h = 9;
-	if(h equals 9) {
-		h = 8;
-	}
-	m = m - 1;
-	print m;
-}

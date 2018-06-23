@@ -22,14 +22,15 @@ static Node * root;
     REPEAT SEMICOL PAUSE OUTSTRING OUTINT LCLICK
     RCLICK LRELEASE RRELEASE UP DOWN LEFT RIGHT
     PRESSKEY RELEASEKEY EQASS OR AND EQCOMP NE LT
-    LE GT GE ADD SUB MUL DIV MOD OPP ININT MOUSEPOSX 
-    MOUSEPOSY INSTRING STRING_T INT_T AUTO_T REGEXP REGEXP_T AUTO PRINT
+    LE GT GE ADD SUB MUL DIV MOD OPP TOREGEXP ININT MOUSEPOSX 
+    MOUSEPOSY INSTRING STRING_T INT_T AUTO_T REGEXP REGEXP_T AUTO PRINT ACC GRAPH SCAN MIN 
+    CONCAT COMP DET TRUE FALSE
 
     %token<i> INT
 
 %token<s> ID STRING
 
-%type<node> file statement expression definition primary type assignment operand operator built_in function fargs boperator
+%type<node> file statement expression definition primary type assignment operand operator built_in function fargs boperator uop 
 
 
 %left EQCOMP EQASS NE
@@ -136,10 +137,6 @@ type : INT_T
 {
 	$$ = new_tree();
 	add_terminal_node($$, auto_t);
-} | REGEXP_T
-{
-	$$ = new_tree();
-	add_terminal_node($$, regexp_t);
 } | STRING_T
 {
 	$$ = new_tree();
@@ -155,6 +152,11 @@ expression : operand boperator operand {
 	add_node($$, $2);
 	add_node($$, $3);
 
+	} | OPP expression
+	{
+		$$ = new_tree();
+		add_terminal_node($$, opp_);
+		add_node($$, $2);
 	}
 	| LPAREN expression RPAREN AND LPAREN expression RPAREN
 	{
@@ -178,6 +180,20 @@ expression : operand boperator operand {
 		add_terminal_node($$, lparen_);
 		add_node($$, $6);
 		add_terminal_node($$, rparen_);
+	} | LPAREN expression RPAREN
+	{
+		$$ = new_tree();
+		add_terminal_node($$, lparen_);
+		add_node($$, $2);
+		add_terminal_node($$, rparen_);
+	} | TRUE
+	{
+		$$ = new_tree();
+		add_terminal_node($$, true_);
+	} | FALSE
+	{
+		$$ = new_tree();
+		add_terminal_node($$, false_);
 	}
 
 ;
@@ -206,22 +222,72 @@ boperator : EQCOMP
 	} | GE {
 		$$ = new_tree();
 		add_terminal_node($$, ge_);
-	}
+	} | ACC
+	{
+		$$ = new_tree();
+		add_terminal_node($$, acc_);
+		$$->token = acc_;
+	} 
 
-operand : primary operator operand
+operand :  primary
+{
+	$$ = new_tree();
+	add_node($$, $1);
+} | primary operator operand
 {
 	$$ = new_tree();
 	$$->token = $2->token;
 	add_node($$, $1);
 	add_node($$, $2);
 	add_node($$, $3);
-} | primary
+} | uop operand 
 {
 	$$ = new_tree();
+	$$->token = $1->token;
 	add_node($$, $1);
+	add_node($$, $2);
+
+} | SUB INT
+{
+	$$ = new_tree();
+	add_terminal_node($$, sub_);
+	char * buffer = malloc(33);
+	sprintf(buffer,"%d",$2);
+	add_terminal_node_with_value($$, int_,  buffer);
+
+} | ADD INT
+{
+	$$ = new_tree();
+	add_terminal_node($$, add_);
+	char * buffer = malloc(33);
+	sprintf(buffer,"%d",$2);
+	add_terminal_node_with_value($$, int_, buffer);
+} 
+
+uop : OPP 
+{
+	$$ = new_tree();
+	$$->token = toregexp_;
+	add_terminal_node($$,opp_);
+
+} | TOREGEXP
+{
+	$$ = new_tree();
+	$$->token = toregexp_;
+	add_terminal_node($$,toregexp_);
+} | MIN {
+	$$ = new_tree();
+	$$->token = min_;
+	add_terminal_node($$,min_);
+} | DET {
+	$$ = new_tree();
+	$$->token = det_;
+	add_terminal_node($$,det_);
+} | COMP {
+	$$ = new_tree();
+	$$->token = comp_;
+	add_terminal_node($$,comp_);
 }
-
-
 
 primary : ID
 {
@@ -276,15 +342,15 @@ operator : ADD
 } | DIV {
 	$$ = new_tree();
 	add_terminal_node($$, div_);
-}
+} | CONCAT {
+		$$ = new_tree();
+		add_terminal_node($$, concat_);
+		$$->token = concat_;
+	}
+
 ;
-assignment : ID EQASS expression
+assignment :  ID EQASS operand 
 {
-	$$ = new_tree();
-	add_terminal_node_with_value($$, id_, $1);
-	add_terminal_node($$, eqass_);
-	add_node($$, $3);
-} | ID EQASS operand {
 	$$ = new_tree();
 	add_terminal_node_with_value($$, id_, $1);
 	add_terminal_node($$, eqass_);
@@ -298,6 +364,17 @@ function : PRINT fargs {
 	add_terminal_node($$, print_);
 	add_node($$, $2);
 	$$->token = print_;
+} | GRAPH fargs{
+	$$ = new_tree();
+	add_terminal_node($$, graph_);
+	add_node($$, $2);
+	$$->token = graph_;
+} | SCAN ID
+{
+	$$ = new_tree();
+	add_terminal_node($$, scan_);
+	add_terminal_node_with_value($$, id_, $2);
+	$$->token = scan_;
 }
 
 ;

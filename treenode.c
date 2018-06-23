@@ -41,9 +41,14 @@ get_value(Node * n){
 	return n->value;
 }
 
+static int random_names = 1;
+
+
 void
 print_tree(Node * t){
+
 	if(t->index == 0){
+
 		set_info(t);
 
 		if(t->value == NULL){
@@ -55,6 +60,8 @@ print_tree(Node * t){
 		return;
 
 	}
+
+
 	switch(t->token){
 
 		case and_:
@@ -90,11 +97,63 @@ print_tree(Node * t){
 
 		break;
 
-		case print_:
-			printf("%s\n","System.out.println(" );
+		case graph_:
+			printf("%s%d%s","try { graph = new PrintWriter(\"graph" ,random_names++,  ".dot\"); graph.print(" );
 			print_tree(t->children[1]);
-			printf("%s\n", ")");
+			printf("%s", ".toDot()); graph.close();} catch(Exception e){}");
+
+		break;
+
+		case print_:
+			printf("%s","System.out.println(" );
+			print_tree(t->children[1]);
+			printf("%s", ")");
 			break;
+
+		case toregexp_:
+			printf("%s","new RegExp(" );
+			print_tree(t->children[1]);
+			printf("%s",").toAutomaton()" );			
+		break;	
+
+		case scan_:
+			
+			print_tree(t->children[1]);
+			printf("%s", "= scan.nextLine()");
+
+		break;
+
+		case acc_:
+			print_tree(t->children[0]);
+			printf("%s", ".run(");
+			print_tree(t->children[2]);
+			printf("%s", ")" );
+
+		break;
+
+		case det_:
+			print_tree(t->children[1]);
+			printf("%s", ".determinize()");
+		break;
+
+		case comp_:
+			print_tree(t->children[1]);
+			printf("%s", ".complement()");
+		break;
+
+		case min_:
+			print_tree(t->children[1]);
+			printf("%s", ".minimize()");
+		break;
+
+		case concat_:
+			printf("%s", "BasicOperations.concatenate(");
+			print_tree(t->children[0]);
+			putchar(',');
+			print_tree(t->children[2]);
+			printf("%s", ")");
+		break;
+
 
 		default: 
 		{
@@ -115,12 +174,15 @@ print_program(Node * t){
 
 void 
 print_headers() {
-	char * headers = "import dk.brics.automaton.*; public class Main { public static void main(String[] args) {";
+	char * headers = "import dk.brics.automaton.*;import java.io.PrintWriter;import java.util.Scanner; public class Main { public static void main(String[] args) {";
 	printf("%s",headers);
+	printf("%s\n","Scanner scan = new Scanner(System.in);");
+	printf("%s\n","PrintWriter graph;" );
 }
 
 void
 print_end() {
+	printf("%s\n", "scan.close();");
 	printf("%s\n", "}}");
 }
 
@@ -137,6 +199,7 @@ set_info(Node * t) {
 	if(t->token == int_ || t->token == string_ || t->token == id_) {
 		return;
 	}
+	
 
 
 	t->value = tokens[t->token];

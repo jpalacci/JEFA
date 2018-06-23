@@ -1,0 +1,11 @@
+auto m = _"a";
+auto c = _"v";
+print m;
+print c;
+print "---------------------";
+print m and c;
+print m or c;
+print "---------------------";
+print m;
+print c;
+

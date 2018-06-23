@@ -1,0 +1,27 @@
+auto m = _"a|b|z";
+auto c = _"v|w|z";
+print m;
+print c;
+
+print m and c accepts "z";
+graph c;
+graph m;
+
+det m;
+graph m;
+min m;
+graph m;
+m = c concat m;
+graph m;
+c = ~c;
+graph c;
+string s;
+print c;
+int a = 1;
+while(true){
+scan s;
+print "Acepta:" + c accepts s;
+if(true){
+a = 0;
+}
+}

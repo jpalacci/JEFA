@@ -1,0 +1,18 @@
+auto m = _"a|b|z";
+auto c = _"v|w|z";
+print m;
+print c;
+print "---------------------";
+print m and c;
+print m or c;
+print "---------------------";
+print m;
+print c;
+string h = "hola";
+string s;
+
+while(1 equals 1){
+
+scan s;
+print "Acepta: " + m accepts s;
+}
