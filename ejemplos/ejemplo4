@@ -1,18 +1,8 @@
-auto m = _"a";
-auto c = _"v";
-print m;
-print c;
-print "---------------------";
-print m and c;
-print m or c;
-print "---------------------";
-print m;
-print c;
+int a = 1;
+int b = 10;
 
-print m accepts "a";
-print m accepts "v";
-print c accepts "a";
-print c accepts "v";
-
-print m and c accepts "h";
+while((a < 10) and (b > 0)){
+	a = a + 1;
+	b = b - 1;
+}
 

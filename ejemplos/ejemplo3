@@ -1,11 +1,49 @@
-auto m = _"a";
-auto c = _"v";
-print m;
-print c;
-print "---------------------";
-print m and c;
-print m or c;
-print "---------------------";
-print m;
-print c;
+#realizamos concatenacion, union , interseccion, complemento de automatas
+# todo sera pedido por linea de comandos
 
+print "ingrese operacion  (concat|union|inter|comp) :";
+string s;
+string r1;
+string r2;
+
+scan s;
+auto m = _"hola";
+auto m2 = m;
+
+if(s equals "concat"){
+	print "ingrese regexp 1:";
+	scan r1;
+	print "ingrese regexp 2:";
+	scan r2;
+	m = _r1 concat _r2;
+}
+if(s equals "union"){
+	print "ingrese regexp 1:";
+	scan r1;
+	print "ingrese regexp 2:";
+	scan r2;
+	m = _r1 or _r2;
+}
+if (s equals "comp"){
+	print "ingrese regexp :";
+	scan r1;
+	m = ~_r1;
+}
+if(s equals "inter"){
+	print "ingrese regexp 1:";
+	scan r1;
+	print "ingrese regexp 2:";
+	scan r2;
+	m = _r1 and _r2;
+}
+
+if(m not equals m2){
+	graph m;
+
+	while(s not equals "exit"){
+	print "Ingrese una palabra:";
+	scan s;
+	print "Acepta:" + m accepts s;
+}
+
+}

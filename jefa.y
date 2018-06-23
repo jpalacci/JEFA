@@ -18,12 +18,12 @@ static Node * root;
 		struct Node_t * node;
 }
  
-%token<node> WHILE LPAREN RPAREN LCURLY RCURLY IF ELSE
+%token<node>  REGEXP REGEXP_T WHILE LPAREN RPAREN LCURLY RCURLY IF ELSE
     REPEAT SEMICOL PAUSE OUTSTRING OUTINT LCLICK
     RCLICK LRELEASE RRELEASE UP DOWN LEFT RIGHT
     PRESSKEY RELEASEKEY EQASS OR AND EQCOMP NE LT
     LE GT GE ADD SUB MUL DIV MOD OPP TOREGEXP ININT MOUSEPOSX 
-    MOUSEPOSY INSTRING STRING_T INT_T AUTO_T REGEXP REGEXP_T AUTO PRINT ACC GRAPH SCAN MIN 
+    MOUSEPOSY INSTRING STRING_T INT_T AUTO_T AUTO PRINT ACC GRAPH SCAN MIN 
     CONCAT COMP DET TRUE FALSE
 
     %token<i> INT
@@ -32,8 +32,10 @@ static Node * root;
 
 %type<node> file statement expression definition primary type assignment operand operator built_in function fargs boperator uop 
 
-
-%left EQCOMP EQASS NE
+%right EQASS
+%left EQCOMP NE CONCAT AND OR
+%left ADD SUB
+%left MUL DIV
 	    
 %start file
     
@@ -152,7 +154,7 @@ expression : operand boperator operand {
 	add_node($$, $2);
 	add_node($$, $3);
 
-	} | OPP expression
+	} | OPP expression 
 	{
 		$$ = new_tree();
 		add_terminal_node($$, opp_);
@@ -233,14 +235,14 @@ operand :  primary
 {
 	$$ = new_tree();
 	add_node($$, $1);
-} | primary operator operand
+} | operand operator operand 
 {
 	$$ = new_tree();
 	$$->token = $2->token;
 	add_node($$, $1);
 	add_node($$, $2);
 	add_node($$, $3);
-} | uop operand 
+} | uop primary  
 {
 	$$ = new_tree();
 	$$->token = $1->token;
@@ -264,13 +266,7 @@ operand :  primary
 	add_terminal_node_with_value($$, int_, buffer);
 } 
 
-uop : OPP 
-{
-	$$ = new_tree();
-	$$->token = toregexp_;
-	add_terminal_node($$,opp_);
-
-} | TOREGEXP
+uop : TOREGEXP
 {
 	$$ = new_tree();
 	$$->token = toregexp_;
@@ -305,6 +301,12 @@ primary : ID
 	add_terminal_node($$, lparen_);
 	add_node($$, $2);
 	add_terminal_node($$, rparen_);
+} | uop primary
+{
+	$$ = new_tree();
+	$$->token = $1->token;
+	add_node($$, $1);
+	add_node($$, $2);
 }
 
 ;

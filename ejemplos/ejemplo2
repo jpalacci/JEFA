@@ -1,8 +1,19 @@
-int m = 8;
-auto a = _"1+45";
-auto b = a;
+#El siguiente programa pedira por entrada estandar
+#un string que sera tomado como expresion regular
+#y convertido en automata, luego se realizara el grafico de dicho automata
+#finalmente se pedira palabras para evaluar si dicho automata la valida
 
-while(!(m >= 30)){
-m = m+1;
-print m;
+
+string s;
+print "Ingrese una expresion regular:";
+
+scan s;
+
+auto m = _s;
+graph m;
+
+while(s not equals "exit"){
+print "Ingrese una palabra:";
+scan s;
+print "Acepta:" + m accepts s;
 }

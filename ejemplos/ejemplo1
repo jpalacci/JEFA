@@ -1,0 +1,14 @@
+#Programa que pide al usuario palabras
+#y devuelve si valida o no la palabra
+#el automata m.
+#cuando el usuario ingresa "exit" el programa termina
+
+auto m = _"a*b|z+";
+
+string s;
+scan s;
+
+while(s not equals "exit"){
+print "Acepta:" + m accepts s;
+	scan s;
+}

@@ -1,18 +1,8 @@
-auto m = _"a|b|z";
-auto c = _"v|w|z";
-print m;
-print c;
-print "---------------------";
-print m and c;
-print m or c;
-print "---------------------";
-print m;
-print c;
+#aplico muchos operadores
 
-print m accepts "a";
-print m accepts "v";
-print c accepts "a";
-print c accepts "v";
+auto a = _"a+b+";
 
-print m and c accepts "z";
+auto b = ~~a;
+
+print a equals b;
 
