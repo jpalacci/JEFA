@@ -20,7 +20,7 @@ add_node(Node * p, Node * c){
 
 Node *
 new_tree(){
-	return new_node(NULL, NULL);
+	return new_node(root_, NULL);
 }
 
 void

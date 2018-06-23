@@ -7,7 +7,7 @@ typedef enum token {
     det_,
 
     //dummy
-    toregexp_,
+    toregexp_, root_,
     
     // Non terminals
     file_, statement_, definition_, assignment_,
