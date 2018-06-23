@@ -6,3 +6,5 @@ auto b = ~~a;
 
 print a equals b;
 
+print !!true;
+
