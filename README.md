@@ -22,7 +22,7 @@ $ cmake ../
 ## Ubicacion de los materiales
 ----------------------------
 * Informe TPE: Se encuentra en la raiz del proyecto con el nombre: "Informe TPE.pdf"
-* Programas ejemplo: 
+* Programas ejemplo: Se encuentran en la carpeta ejemplos
 
 
 ## Ejecucion de los artefactos
