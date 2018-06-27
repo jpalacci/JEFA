@@ -1,6 +1,5 @@
-file : statement
-
-statement : statement statement
+file ::= statement
+statement ::= statement statement
 	| WHILE LPAREN expression RPAREN LCURLY statement RCURLY 
 	| SEMICOL 
 	| IF LPAREN expression RPAREN LCURLY statement RCURLY
@@ -9,15 +8,12 @@ statement : statement statement
 	| function SEMICOL
 	| expression SEMICOL 
 	| operand SEMICOL
-
-definition : 
+definition ::= 
 	type assignment 
 	| type ID
-
-type : INT_T
+type ::= INT_T
 	| AUTO_T
 	| STRING_T
-
 expression : operand boperator operand
 	| OPP expression 
 	| LPAREN expression RPAREN AND LPAREN expression RPAREN
@@ -25,49 +21,38 @@ expression : operand boperator operand
 	| LPAREN expression RPAREN
 	| TRUE
 	| FALSE
-
-
-boperator : EQCOMP 
+boperator ::= EQCOMP 
 	| NE 
 	| LT 
 	| GT
 	| LE 
 	| GE
-	| ACC
-	
-operand :  primary
+	| ACC	
+operand ::=  primary
 	| operand operator operand 
 	| uop primary  
 	| SUB INT
 	| ADD INT
-
-uop : TOREGEXP
+uop ::= TOREGEXP
 	| MIN 
 	| DET 
 	| COMP 
-
-primary : ID
+primary ::= ID
 	| built_in 
 	| LPAREN operand RPAREN 
 	| uop primary
-
-built_in : STRING 
+built_in ::= STRING 
 	 | INT
-
-operator : ADD
+operator ::= ADD
 	| SUB 
 	| AND
 	| OR
 	| MUL
 	| DIV 
 	| CONCAT
-
-assignment :  ID EQASS operand 
-
-
-function : PRINT fargs
+assignment ::= ID EQASS operand 
+function ::= PRINT fargs
 	| GRAPH fargs
 	| SCAN ID
-
-fargs : expression 
+fargs ::= expression 
 	| operand 
