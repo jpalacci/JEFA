@@ -1,13 +1,11 @@
 #!/bin/bash
 
-yacc -dtv jefa.y
-flex jefa.l
-gcc -o salida lex.yy.c y.tab.c treenode.c
-cat $1 | ./salida > Main.java  
-javac -cp ".:./automaton.jar" Main.java
-java -cp ".:./automaton.jar" Main
-#rm Main.java
-rm lex.yy.c
-rm y.tab.h
-rm y.tab.c
-rm y.output
+cat $1 | ./jefa > Main.java 
+rm -f comperrors 
+rm -f Main.class
+javac -cp $JEFA Main.java 2> ./comperrors
+
+if [ ! -f Main.class  ]; then
+    echo "Sintax Error. See more at comperrors"
+fi
+rm -f Main.java

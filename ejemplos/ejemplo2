@@ -15,5 +15,8 @@ graph m;
 while(s not equals "exit"){
 print "Ingrese una palabra:";
 scan s;
-print "Acepta:" + m accepts s;
+if(s not equals "exit")
+	{
+		print "Acepta:" + m accepts s;
+	}	
 }

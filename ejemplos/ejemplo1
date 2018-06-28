@@ -3,12 +3,19 @@
 #el automata m.
 #cuando el usuario ingresa "exit" el programa termina
 
-auto m = _"a*b|z+";
+string s = "a*b|z+";
+auto m = _s;
 
-string s;
-scan s;
+print "La expresion regular a utilizar es : " + s + "\n\n";
+
+
 
 while(s not equals "exit"){
-print "Acepta:" + m accepts s;
+print "Ingrese una palabra";
 	scan s;
+	if(s not equals "exit")
+	{
+		print "Acepta:" + m accepts s;
+	}	
+
 }
