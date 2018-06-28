@@ -9,9 +9,26 @@ Un lenguaje para autómatas, expresiones regulares y más.
 Es posible construir el proyecto con
 
 ```sh
-$ mkdir build
-$ cd build
-$ cmake ../
+$ make
+```
+Esto generara un binario llamado "jefa" que sera utilizado para compilar los programas
+
+## Compilacion y Ejecución de los programas:
+----------------------------------
+
+Debe estar el binario "jefa" presente en el directorio actual.
+Debe setear una variable de entorno JEFA con el path al .jar de la 
+libreria de automatas.
+Una vez realizado lo anterior, podra compilar sus programas con la ayuda del script "compile"
+incluido en el directorio raiz del presente repositorio, de la siguiente manera:
+```sh
+$ sh compile ./path/a/su/programa
+```
+Lo anterior generara un archivo Main.class.
+Para ejecutar su programa facilitamos otro script de ayuda "run" que tambien estara
+disponible en el directorio raiz. Para utilizarlo ejecute:
+```sh
+$ sh run
 ```
 
 ## Requerimientos
@@ -23,16 +40,8 @@ $ cmake ../
 ----------------------------
 * Informe TPE: Se encuentra en la raiz del proyecto con el nombre: "Informe TPE.pdf"
 * Programas ejemplo: Se encuentran en la carpeta ejemplos
+* Los scripts de ayuda "compiler" y "run" se encuentran en la raiz del proyecto
 
-
-## Ejecucion de los artefactos
-----------------------------
-
-Para ejecutar los programas compilados:
-
-```sh
-$ ./httpd
-```
 
 ## Autores
 -----------------------------
