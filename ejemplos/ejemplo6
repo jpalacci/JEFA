@@ -1,0 +1,18 @@
+#Minimizacion de Automatas
+#Se dejara el grafico antes y despues de la minimizacion
+
+string s;
+print "Ingrese una expresion regular:";
+
+scan s;
+
+auto a = _s;
+
+auto b = a or a;
+
+graph b;
+
+min b;
+
+graph b;
+

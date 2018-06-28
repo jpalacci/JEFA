@@ -1,0 +1,18 @@
+#Determinismo de Automatas
+#Se dejara el grafico antes y despues de la determinizacion
+
+string s;
+print "Ingrese una expresion regular:";
+
+scan s;
+
+auto a = _s;
+
+auto b = a | ~a;
+
+graph b;
+
+det b;
+
+graph b;
+
