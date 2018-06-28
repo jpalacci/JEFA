@@ -42,6 +42,16 @@ $ sh run
 * Programas ejemplo: Se encuentran en la carpeta ejemplos
 * Los scripts de ayuda "compiler" y "run" se encuentran en la raiz del proyecto
 
+## Graficador de automatas
+-----------------------------
+Es posible graficar los archivos .dot generados en sus programas por la utilizacion de la instruccion graph <automata>
+mediante GraphViz disponible en <https://www.graphviz.org/>. Ejemplo:
+
+```sh
+$ dot -Tpng graph.dot -o graph.png
+```
+
+El comando anterior genera un archivo en formato png llamado graph.png a partir del archivo en formato dot llamado graph.dot
 
 ## Autores
 -----------------------------
