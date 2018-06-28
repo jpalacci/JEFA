@@ -3,5 +3,6 @@ PrintWriter graph;
 Automaton a=new RegExp("a+b+").toAutomaton();
 Automaton b=a.complement().complement();
 System.out.println(a.equals(b));
+System.out.println(!!(new Integer(1).equals(1)) );
 scan.close();
 }}

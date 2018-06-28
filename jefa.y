@@ -123,7 +123,7 @@ definition :
 	{
 			$$ = new_tree();
 			add_node($$, $1);
-			add_terminal_node_with_value($$, id_, $2);
+			add_terminal_node_with_value($$, id_, $2, $1->token);
 	} 
 
 	;
@@ -252,7 +252,7 @@ operand :  primary
 	add_terminal_node($$, sub_);
 	char * buffer = malloc(33);
 	sprintf(buffer,"%d",$2);
-	add_terminal_node_with_value($$, int_,  buffer);
+	add_terminal_node_with_value($$, int_,  buffer, $1->token);
 
 } | ADD INT
 {
@@ -260,7 +260,7 @@ operand :  primary
 	add_terminal_node($$, add_);
 	char * buffer = malloc(33);
 	sprintf(buffer,"%d",$2);
-	add_terminal_node_with_value($$, int_, buffer);
+	add_terminal_node_with_value($$, int_, buffer, $1->token);
 } 
 
 uop : TOREGEXP
@@ -285,7 +285,7 @@ uop : TOREGEXP
 primary : ID
 {
 	$$ = new_tree();
-	add_terminal_node_with_value($$, id_, $1);
+	add_terminal_node_with_value($$, id_, $1, id_t_);
 
 	
 } | built_in 
@@ -311,13 +311,13 @@ primary : ID
 built_in : STRING 
 {
 	$$ = new_tree();
-	add_terminal_node_with_value($$, string_, $1);
+	add_terminal_node_with_value($$, string_, $1, string_t_);
 } | INT
 {
 	$$ = new_tree();
 	char * aux = malloc(33);
 	sprintf(aux, "%d", $1);
-	add_terminal_node_with_value($$, int_, aux);
+	add_terminal_node_with_value($$, int_, aux, int_t_);
 }
 
 operator : ADD
@@ -351,7 +351,7 @@ operator : ADD
 assignment :  ID EQASS operand 
 {
 	$$ = new_tree();
-	add_terminal_node_with_value($$, id_, $1);
+	add_terminal_node_with_value($$, id_, $1, id_t_);
 	add_terminal_node($$, eqass_);
 	add_node($$, $3);
 
@@ -372,7 +372,7 @@ function : PRINT fargs {
 {
 	$$ = new_tree();
 	add_terminal_node($$, scan_);
-	add_terminal_node_with_value($$, id_, $2);
+	add_terminal_node_with_value($$, id_, $2, id_t_);
 	$$->token = scan_;
 }
 

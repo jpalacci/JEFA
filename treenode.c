@@ -3,13 +3,18 @@
 #include "treenode.h"
 #include <string.h>
 
+static token type;
+
+#define IS_A_UOP(token) (token == comp_ || token == toregexp_ || token == min_ || token == det_)
+
 static Node *
-new_node(token token, char * value){
+new_node(token token_, char * value, token node_type){
 	Node * a = (Node *)malloc(sizeof(*a));
-	a->token = token;
+	a->token = token_;
 	a->value = value;
 	a->index = 0;
 	a->children = malloc(10 * sizeof(*a->children));
+	a->node_type = node_type;
 	return a;
 }
 
@@ -20,7 +25,7 @@ add_node(Node * p, Node * c){
 
 Node *
 new_tree(){
-	return new_node(root_, NULL);
+	return new_node(root_, NULL, no_type_);
 }
 
 void
@@ -28,7 +33,7 @@ add_terminal_node(Node * p, token token){
 	if(p == NULL)
 		return;
 
-	p->children[p->index++] = new_node(token, NULL);
+	p->children[p->index++] = new_node(token, NULL, no_type_);
 }
 
 void
@@ -41,15 +46,27 @@ get_value(Node * n){
 	return n->value;
 }
 
+void
+set_type(Node * n, token node_type){
+	n->node_type = node_type;
+}
+
+token
+get_type(Node * n){
+	return n->node_type;
+}
+
 static int random_names = 1;
 
 
 void
 print_tree(Node * t){
-
 	if(t->index == 0){
 
-		set_info(t);
+		if(set_info(t) == -1){
+			exit(0);
+		}
+
 
 		if(t->value == NULL){
 			printf("%s\n", "MALO");
@@ -71,6 +88,11 @@ print_tree(Node * t){
 			putchar(',');
 			print_tree(t->children[2]);
 			printf("%s", ")");
+			t->node_type = auto_t;
+			if(t->children[0]->node_type != auto_t || t->children[2]->node_type != auto_t){
+				printf("\n\nError de compilacion: La opereacion 'and' se usa con dos automatas\n");
+				exit(0);
+			}
 
 		break;
 
@@ -81,6 +103,11 @@ print_tree(Node * t){
 			putchar(',');
 			print_tree(t->children[2]);
 			printf("%s", ")");
+			t->node_type = auto_t;
+			if(t->children[0]->node_type != auto_t || t->children[2]->node_type != auto_t){
+				printf("\n\nError de compilacion: La opereacion 'or' se usa con dos automatas\n");
+				exit(0);
+			}
 
 		break;
 
@@ -101,6 +128,11 @@ print_tree(Node * t){
 			printf("%s%d%s","try { graph = new PrintWriter(\"graph" ,random_names++,  ".dot\"); graph.print(" );
 			print_tree(t->children[1]);
 			printf("%s", ".toDot()); graph.close();} catch(Exception e){}");
+			t->node_type = auto_t;
+			if(t->children[1]->node_type != auto_t){
+				printf("\n\nError de compilacion: La funcion 'graph' recibe un automata\n");
+				exit(0);
+			}
 
 		break;
 
@@ -113,7 +145,12 @@ print_tree(Node * t){
 		case toregexp_:
 			printf("%s","new RegExp(" );
 			print_tree(t->children[1]);
-			printf("%s",").toAutomaton()" );			
+			printf("%s",").toAutomaton()" );
+			t->node_type = auto_t;
+			if(t->children[1]->node_type != string_t_){
+				printf("\n\nError de compilacion: El operador '_' recibe un automata\n");
+				exit(0);
+			}			
 		break;	
 
 		case scan_:
@@ -128,12 +165,15 @@ print_tree(Node * t){
 			printf("%s", ".run(");
 			print_tree(t->children[2]);
 			printf("%s", ")" );
-
 		break;
 
 		case det_:
 			print_tree(t->children[1]);
 			printf("%s", ".determinize()");
+			if(t->children[1]->node_type != auto_t){
+				printf("\n\nError de compilacion: La opereacion 'det' se usa con un automatas\n");
+				exit(0);
+			}
 		break;
 
 		case comp_:
@@ -144,6 +184,10 @@ print_tree(Node * t){
 		case min_:
 			print_tree(t->children[1]);
 			printf("%s", ".minimize()");
+			if(t->children[1]->node_type != auto_t){
+				printf("\n\nError de compilacion: El operador 'min' se usa con un automata\n");
+				exit(0);
+			}
 		break;
 
 		case concat_:
@@ -152,6 +196,10 @@ print_tree(Node * t){
 			putchar(',');
 			print_tree(t->children[2]);
 			printf("%s", ")");
+			if(t->children[0]->node_type != auto_t || t->children[0]->node_type != auto_t){
+				printf("\n\nError de compilacion: El operador 'concat' se usa con dos automatas\n");
+				exit(0);
+			}
 		break;
 
 
@@ -159,6 +207,10 @@ print_tree(Node * t){
 		{
 			for(int i = 0; i < t->index; i++){
 				print_tree(t->children[i]);
+			}
+			if(t->index == 1){
+				t->node_type = t->children[0]->node_type;
+				return;
 			}
 		};
 	}
@@ -186,8 +238,53 @@ print_end() {
 	printf("%s\n", "}}");
 }
 
-void
+//Devuelve 0 si no la encontro 
+int
+search_variable(char * id){
+	for (int i = 0; i < last_position; ++i)
+	{
+		if(!strcmp(id, ids[i])){
+			return i;
+		}
+	}
+	return -1;
+}
+
+//devuelve 0 si ya esta definida
+int
+define_variable(char * id){
+	if(search_variable(id) != -1){
+		return -1;
+	}
+	int len = strlen(id);
+	ids[last_position] = malloc(len);
+	strcpy(ids[last_position], id);
+	types[last_position++] = type;
+}
+
+int
 set_info(Node * t) {
+
+	if(t->token == id_){
+		int ret;
+		if(new_id_definition){
+			ret = define_variable(t->value);
+			t->node_type = type;
+			if(ret == -1){
+				printf("\n\nError de compilacion: La variable '%s' ya esta definida\n",t->value);
+				return -1;
+			}	
+		} else {
+			ret = search_variable(t->value);
+			if(ret == -1){
+				printf("\n\nError de compilacion: La variable '%s' se usa y no esta definida\n",t->value);
+				return -1;
+			}
+			t->node_type = types[ret];
+		}
+		new_id_definition = 0;
+		return ret;
+	}
 
 	if(t->token == int_) {
 
@@ -196,21 +293,28 @@ set_info(Node * t) {
 		t->value = malloc(strlen(text) + strlen(t->value) + 3);
 		sprintf(t->value, "new Integer(%s)", aux);
 	}
-	if(t->token == int_ || t->token == string_ || t->token == id_) {
-		return;
+
+	if(t->token == int_ || t->token == string_ ) {
+		return 1;
 	}
-	
+
+	if(t->token == auto_t || t->token == int_t_ || t->token == string_t_ ) {
+		type = t->token;
+		new_id_definition = 1;
+	}
+
 
 
 	t->value = tokens[t->token];
+	return 1;
 }
 
 void
-add_terminal_node_with_value(Node * p, token token, char * value) {
+add_terminal_node_with_value(Node * p, token token_, char * value, token node_type) {
 
 	if(p == NULL)
 		return;
 
-	p->children[p->index++] = new_node(token, value);
+	p->children[p->index++] = new_node(token_, value, node_type);
 
 }

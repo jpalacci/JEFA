@@ -3,7 +3,7 @@ CC = gcc
 all: lex.yy.c y.tab.c jefa
 
 jefa:
-	$(CC) -c lex.yy.c y.tab.c
+	$(CC) -o salida lex.yy.c y.tab.c
 
 
 y.tab.c: jefa.y
