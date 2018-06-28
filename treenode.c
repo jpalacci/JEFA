@@ -64,7 +64,7 @@ print_tree(Node * t){
 	if(t->index == 0){
 
 		if(set_info(t) == -1){
-			exit(0);
+			exit(1);
 		}
 
 
@@ -90,8 +90,8 @@ print_tree(Node * t){
 			printf("%s", ")");
 			t->node_type = auto_t;
 			if(t->children[0]->node_type != auto_t || t->children[2]->node_type != auto_t){
-				printf("\n\nError de compilacion: La opereacion 'and' se usa con dos automatas\n");
-				exit(0);
+				fprintf(stderr, "\n\nError de compilacion: La opereacion 'and' se usa con dos automatas\n");
+				exit(1);
 			}
 
 		break;
@@ -105,8 +105,8 @@ print_tree(Node * t){
 			printf("%s", ")");
 			t->node_type = auto_t;
 			if(t->children[0]->node_type != auto_t || t->children[2]->node_type != auto_t){
-				printf("\n\nError de compilacion: La opereacion 'or' se usa con dos automatas\n");
-				exit(0);
+				fprintf(stderr, "\n\nError de compilacion: La opereacion 'or' se usa con dos automatas\n");
+				exit(1);
 			}
 
 		break;
@@ -130,8 +130,8 @@ print_tree(Node * t){
 			printf("%s", ".toDot()); graph.close();} catch(Exception e){}");
 			t->node_type = auto_t;
 			if(t->children[1]->node_type != auto_t){
-				printf("\n\nError de compilacion: La funcion 'graph' recibe un automata\n");
-				exit(0);
+				fprintf(stderr, "\n\nError de compilacion: La funcion 'graph' recibe un automata\n");
+				exit(1);
 			}
 
 		break;
@@ -148,8 +148,8 @@ print_tree(Node * t){
 			printf("%s",").toAutomaton()" );
 			t->node_type = auto_t;
 			if(t->children[1]->node_type != string_t_){
-				printf("\n\nError de compilacion: El operador '_' recibe un automata\n");
-				exit(0);
+				fprintf(stderr, "\n\nError de compilacion: El operador '_' recibe un automata\n");
+				exit(1);
 			}			
 		break;	
 
@@ -171,8 +171,8 @@ print_tree(Node * t){
 			print_tree(t->children[1]);
 			printf("%s", ".determinize()");
 			if(t->children[1]->node_type != auto_t){
-				printf("\n\nError de compilacion: La opereacion 'det' se usa con un automatas\n");
-				exit(0);
+				fprintf(stderr, "\n\nError de compilacion: La opereacion 'det' se usa con un automatas\n");
+				exit(1);
 			}
 		break;
 
@@ -185,8 +185,8 @@ print_tree(Node * t){
 			print_tree(t->children[1]);
 			printf("%s", ".minimize()");
 			if(t->children[1]->node_type != auto_t){
-				printf("\n\nError de compilacion: El operador 'min' se usa con un automata\n");
-				exit(0);
+				fprintf(stderr, "\n\nError de compilacion: El operador 'min' se usa con un automata\n");
+				exit(1);
 			}
 		break;
 
@@ -197,8 +197,8 @@ print_tree(Node * t){
 			print_tree(t->children[2]);
 			printf("%s", ")");
 			if(t->children[0]->node_type != auto_t || t->children[0]->node_type != auto_t){
-				printf("\n\nError de compilacion: El operador 'concat' se usa con dos automatas\n");
-				exit(0);
+				fprintf(stderr, "\n\nError de compilacion: El operador 'concat' se usa con dos automatas\n");
+				exit(1);
 			}
 		break;
 
@@ -271,13 +271,13 @@ set_info(Node * t) {
 			ret = define_variable(t->value);
 			t->node_type = type;
 			if(ret == -1){
-				printf("\n\nError de compilacion: La variable '%s' ya esta definida\n",t->value);
+				fprintf(stderr, "\n\nError de compilacion: La variable '%s' ya esta definida\n",t->value);
 				return -1;
 			}	
 		} else {
 			ret = search_variable(t->value);
 			if(ret == -1){
-				printf("\n\nError de compilacion: La variable '%s' se usa y no esta definida\n",t->value);
+				fprintf(stderr, "\n\nError de compilacion: La variable '%s' se usa y no esta definida\n",t->value);
 				return -1;
 			}
 			t->node_type = types[ret];
